@@ -19,18 +19,6 @@ public class LevelBuilder : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		//Add a 2D bounding box to the last added cube
-		//For some reason, doing this immediately after the BoxCollider has been removed doesn't work
-		if (cubes.Count > 0 && cubes [cubes.Count - 1] != null) {
-			if(cubes[cubes.Count - 1].GetComponent<BoxCollider>() == null && cubes[cubes.Count - 1].GetComponent<BoxCollider2D>() == null){
-				cubes[cubes.Count - 1].AddComponent<BoxCollider2D>();
-				cubes[cubes.Count - 1].GetComponent<BoxCollider2D>().isTrigger = true;
-				
-			}
-		}
-
-		RaycastHit hit = new RaycastHit (); 
-
 		//A left click will create a new block
 		//Make sure the user is not already hovered over another block
 		createblockfromclick = true;
@@ -51,7 +39,7 @@ public class LevelBuilder : MonoBehaviour {
 
 			//Create the cube, and place it in the correct position
 			GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			Destroy(g.collider);
+			//Destroy(g.collider);
 
 			Vector2 cubePosition = new Vector2();
 			cubePosition.x = Mathf.Round(ray.origin.x);
@@ -86,7 +74,7 @@ public class LevelBuilder : MonoBehaviour {
 	void SaveWorld(){
 
 
-		using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"Levels/level1.txt"))
+		using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"Levels/level1/walls.txt"))
 		{
 			//We don't want to save the block that was placed when clicking the save button, so don't include the last block in the list
 			for (int i = 0; i < cubes.Count - 1; i ++)

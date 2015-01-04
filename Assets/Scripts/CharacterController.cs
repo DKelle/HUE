@@ -64,10 +64,8 @@ public class CharacterController : MonoBehaviour {
 			float distance = 1f;
 
 			//Before we detect key input, check to see which directions we can move without collisions
-
-
 			//UP
-			canmove[UP] = !Physics2D.Linecast(startTransforms[UP].position, endTransforms[UP].position);
+			canmove[UP] = !Physics.Raycast(transform.position, Vector3.up, .5f);
 
 			//If we hit a block, stop jumping
 			if(!canmove[UP]){
@@ -76,10 +74,7 @@ public class CharacterController : MonoBehaviour {
 			}
 
 			//DOWN
-			canmove[DOWN] = !Physics2D.Linecast(startTransforms[DOWN].position, endTransforms[DOWN].position);
-
-			
-			Debug.DrawLine(startTransforms[RIGHT].position, endTransforms[RIGHT].position, Color.red);
+			canmove[DOWN] = !Physics.Raycast(transform.position, Vector3.down, .5f);
 
 			//Detect key inputs, and change the characters position
 			Vector2 newpos = transform.position;
@@ -109,10 +104,10 @@ public class CharacterController : MonoBehaviour {
 			transform.position = newpos;
 
 			//RIGHT
-			canmove[RIGHT] = !Physics2D.Linecast(startTransforms[RIGHT].position, endTransforms[RIGHT].position);
+			canmove[RIGHT] = !Physics.Raycast(transform.position, Vector3.right, .5f);
 			
 			//LEFT
-			canmove[LEFT] = !Physics2D.Linecast(startTransforms[LEFT].position, endTransforms[LEFT].position);
+			canmove[LEFT] = !Physics.Raycast(transform.position, Vector3.left, .5f);
 			
 			if (dirs [LEFT] && canmove[LEFT]) {
 				newpos.x = transform.position.x - distance;
@@ -135,7 +130,6 @@ public class CharacterController : MonoBehaviour {
 	void Update () {
 
 		HSLColor charcolor = new HSLColor (sr.color);
-		//Debug.Log ("Before color change:" + charcolor.h);
 		charcolor.h += .75f;
 		charcolor.s += .001f;
 		//Debug.Log ("After color change:" + charcolor.l);
@@ -144,12 +138,6 @@ public class CharacterController : MonoBehaviour {
 		//Debug.Log ("newc: " + newc.r); 
 
 		sr.color = charcolor.ToRGBA ();
-		//Debug.Log ("R: " + sr.color.r);
-		//Debug.Log ("B: " + sr.color.b);
-		//Debug.Log ("G: " + sr.color.g);
-		//do something
-		//float elapsed = 0f + s.Elapsed.Milliseconds;
 
-		//sr.color = new Color (Mathf.Sin(elapsed), Mathf.Sin(elapsed), Mathf.Sin(elapsed));
 	}
 }

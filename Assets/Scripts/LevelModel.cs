@@ -1,27 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 
 public class LevelModel : MonoBehaviour {
 
-	public int level;
+	public int level = 1;
 	
 	public SpriteRenderer character;
 
 	public GameObject[] trail = new GameObject[10];
+	public List<GameObject> walls;
 
 	// Use this for initialization
 	void Start () {
-		level = 1;
-		//loadLevel ();
+		walls = new List<GameObject>();
 		for (int i = 0; i < trail.Length; i ++) {
 			trail[i] = new GameObject();
 			trail[i].AddComponent<SpriteRenderer>();
 		}
+		loadLevel (1);
+		
 		StartCoroutine(TimedUpdate());
 	}
 
-	void loadLevel(){
-		string[] rects = System.IO.File.ReadAllLines(@"Levels/level"+level+"/walls2.txt");
+	void loadLevel(int level){
+		Debug.Log ("Trying to load level: " + level);
+		string[] rects = System.IO.File.ReadAllLines(@"Levels/level"+level+"/walls.txt");
 		char[] delimiterChars = { ',' };
 
 		foreach(string r in rects){
@@ -32,16 +37,16 @@ public class LevelModel : MonoBehaviour {
 			Vector2 pos = new Vector2();
 			Vector2 scale = new Vector2();
 
-			pos.x = System.Int32.Parse(newr[0]);
-			pos.y = System.Int32.Parse(newr[1]);
-			scale.x = System.Int32.Parse(newr[2]);
-			scale.y = System.Int32.Parse(newr[3]);
-			
-
+			pos.x = float.Parse(newr[0]);
+			pos.y = float.Parse(newr[1]);
+			scale.x = float.Parse(newr[2]);
+			scale.y = float.Parse(newr[3]);
 
 			g.transform.position		= pos;
-			//g.transform.localScale		= scale;
-			
+			g.transform.localScale		= scale;
+
+			walls.Add (g);
+	
 			Debug.Log(r);
 		}
 	}
@@ -62,8 +67,6 @@ public class LevelModel : MonoBehaviour {
 					
 				}
 			}
-
-
 
 			trail [9].GetComponent<SpriteRenderer> ().sprite = (Sprite)(Sprite.Instantiate (character.sprite));
 			trail [9].GetComponent<SpriteRenderer> ().transform.position = character.transform.position;
