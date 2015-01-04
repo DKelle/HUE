@@ -6,6 +6,10 @@ public class LevelBuilder : MonoBehaviour {
 
 	List<GameObject> cubes;
 
+	private bool createblockfromclick = false;
+
+	Rect saverect;
+
 	// Use this for initialization
 	void Start () {
 		cubes = new List<GameObject>();
@@ -28,16 +32,17 @@ public class LevelBuilder : MonoBehaviour {
 		RaycastHit hit = new RaycastHit (); 
 
 		//A left click will create a new block
-		bool clickedcube = false;
+		//Make sure the user is not already hovered over another block
+		createblockfromclick = true;
 
 		//Before we add a new block, make sure that the user isn't trying to resize an already placed block
 		foreach(GameObject g in cubes){
 			if(g.GetComponent<Resizable>().mouseover){
-				clickedcube = true;
+				createblockfromclick = false;
 			}
 		}
 
-		if (Input.GetMouseButtonDown (0) && !clickedcube) {
+		if (Input.GetMouseButtonDown (0) && createblockfromclick) {
 			Debug.Log("Placing block");
 
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -63,12 +68,35 @@ public class LevelBuilder : MonoBehaviour {
 			//Debug.Log(ray.origin.x);
 		}
 		
-		if (Input.GetMouseButtonDown (1)) {
-			Debug.Log("Pressed right click.");
+
+	}
+
+
+	void OnGUI() {
+		//GUI.Box (new Rect (0,0,10,9), "Loader Menu");
+		saverect = new Rect (0, 0, 100, 100);
+		if (GUI.Button (saverect, "Save")) {
+			createblockfromclick = false;
+			Debug.Log ("Saving");
+			SaveWorld();
 		}
 		
-		if (Input.GetMouseButtonDown (2)) {
-			Debug.Log("Pressed middle click.");		
+	}
+
+	void SaveWorld(){
+
+
+		using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"Levels/level1.txt"))
+		{
+			//We don't want to save the block that was placed when clicking the save button, so don't include the last block in the list
+			for (int i = 0; i < cubes.Count - 1; i ++)
+			{
+				GameObject go = cubes[i];
+
+				//Remember position and scale
+				string objectdata = go.transform.position.x + "," + go.transform.position.y + "," + go.transform.localScale.x + "," + go.transform.localScale.y;
+				file.WriteLine(objectdata);
+			}
 		}
 	}
 
