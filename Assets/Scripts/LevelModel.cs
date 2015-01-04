@@ -19,7 +19,7 @@ public class LevelModel : MonoBehaviour {
 			trail[i] = new GameObject();
 			trail[i].AddComponent<SpriteRenderer>();
 		}
-		loadLevel (1);
+		loadLevel (2);
 		
 		StartCoroutine(TimedUpdate());
 	}

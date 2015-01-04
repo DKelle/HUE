@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class LevelBuilder : MonoBehaviour {
 
@@ -72,9 +73,13 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	void SaveWorld(){
+		DirectoryInfo di = new DirectoryInfo ("Levels");
+		int level = di.GetDirectories ().Length + 1;
 
+		//Create a directory for the new level
+		Directory.CreateDirectory ("Levels/level" + level);
 
-		using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"Levels/level1/walls.txt"))
+		using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"Levels/level" + level + "/walls.txt"))
 		{
 			//We don't want to save the block that was placed when clicking the save button, so don't include the last block in the list
 			for (int i = 0; i < cubes.Count - 1; i ++)
