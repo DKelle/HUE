@@ -18,8 +18,10 @@ public class LevelBuilder : MonoBehaviour {
 		//Add a 2D bounding box to the last added cube
 		//For some reason, doing this immediately after the BoxCollider has been removed doesn't work
 		if (cubes.Count > 0 && cubes [cubes.Count - 1] != null) {
-			if(cubes[cubes.Count - 1].GetComponent<BoxCollider>() == null){
+			if(cubes[cubes.Count - 1].GetComponent<BoxCollider>() == null && cubes[cubes.Count - 1].GetComponent<BoxCollider2D>() == null){
 				cubes[cubes.Count - 1].AddComponent<BoxCollider2D>();
+				cubes[cubes.Count - 1].GetComponent<BoxCollider2D>().isTrigger = true;
+				
 			}
 		}
 
@@ -30,7 +32,7 @@ public class LevelBuilder : MonoBehaviour {
 
 		//Before we add a new block, make sure that the user isn't trying to resize an already placed block
 		foreach(GameObject g in cubes){
-			if(g.GetComponent<Resizable>().foundblock){
+			if(g.GetComponent<Resizable>().mouseover){
 				clickedcube = true;
 			}
 		}
@@ -55,7 +57,7 @@ public class LevelBuilder : MonoBehaviour {
 			g.AddComponent<Resizable>();
 
 			//Make sure the player can rezise without having to release, and reclick
-			g.GetComponent<Resizable>().foundblock = true;
+			g.GetComponent<Resizable>().mouseover = true;
 
 			cubes.Add(g);
 			//Debug.Log(ray.origin.x);

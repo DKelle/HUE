@@ -9,9 +9,8 @@ public class Resizable : MonoBehaviour
 	private Vector2 screenPoint;
 	private Vector2 offset;
 
-	public bool foundblock = false;
-
-
+	public bool mouseover = false;
+	
 	// array for storing if the 3 mouse buttons are dragging
 	private bool[] isDragActive;
 	
@@ -26,15 +25,16 @@ public class Resizable : MonoBehaviour
 
 	void OnDragging(int mousebutton)
 	{
+
+		//If we don't round here, the amount that the block scales can depend on the speed at which the mouse moves
+		currentdraglocation = Camera.main.ScreenPointToRay (Input.mousePosition);
+		currentdraglocation.origin = new Vector2 (Mathf.Round (currentdraglocation.origin.x), Mathf.Round (currentdraglocation.origin.y));
+
+		int dx = (int)(Mathf.Round (olddraglocation.origin.x - currentdraglocation.origin.x));
+		int dy = (int)(Mathf.Round (olddraglocation.origin.y - currentdraglocation.origin.y));
+
 		//If left click, user is resizing the block
 		if (mousebutton == 0) {
-
-			//If we don't round here, the amount that the block scales can depend on the speed at which the mouse moves
-			currentdraglocation = Camera.main.ScreenPointToRay (Input.mousePosition);
-			currentdraglocation.origin = new Vector2 (Mathf.Round (currentdraglocation.origin.x), Mathf.Round (currentdraglocation.origin.y));
-
-			int dx = (int)(Mathf.Round (olddraglocation.origin.x - currentdraglocation.origin.x));
-			int dy = (int)(Mathf.Round (olddraglocation.origin.y - currentdraglocation.origin.y));
 
 			Vector2 scale = new Vector2 (transform.localScale.x + dx, transform.localScale.y + dy);
 			Vector2 newpos = new Vector2 (transform.position.x - (dx / 2.0f), transform.position.y - (dy / 2.0f));
@@ -42,66 +42,73 @@ public class Resizable : MonoBehaviour
 			transform.localScale = scale;
 			transform.position = newpos;
 
-			olddraglocation = currentdraglocation;
 		}
 
 		//If right click, the user is trying to move the block
 		else if(mousebutton == 1){
-			//Debug.Log("moving blcok");
+
+			Debug.Log ("right dragging");
+			Vector2 newpos = new Vector2 (transform.position.x - dx, transform.position.y - dy);
+			
+			transform.position = newpos;
 		}
+
+		olddraglocation = currentdraglocation;
+		
 	}
 
 	void OnDraggingStart(int mousebutton){
-		if (mousebutton == 0) {
-			//Debug.Log ("just started dragging");
-			olddraglocation = Camera.main.ScreenPointToRay (Input.mousePosition); 
-		}
+		//Debug.Log ("just started dragging");
+		olddraglocation = Camera.main.ScreenPointToRay (Input.mousePosition); 
 
+	}
+
+	void OnDraggingStop(){
+		mouseover = false;
 	}
 
 	void Update(){
+
+		bool anybuttondown = false;
 	
-		if (foundblock) {
-			for (int i=0; i < isDragActive.Length; i++){
-				if (Input.GetMouseButton(i)){
-					if (downInPreviousFrame[i]){
-						if (isDragActive[i]){
-							OnDragging(i);
-						}
-						else{
-							isDragActive[i] = true;
-							OnDraggingStart(i);
-						}
-					}
-					downInPreviousFrame[i] = true;
-				}else{
+		for (int i=0; i < isDragActive.Length; i++){
+			if (Input.GetMouseButton(i) ){
+				anybuttondown = true;
+
+				if (downInPreviousFrame[i] && mouseover){
 					if (isDragActive[i]){
-						isDragActive[i] = false;
+						OnDragging(i);
 					}
-					downInPreviousFrame[i] = false;
+					else{
+						isDragActive[i] = true;
+						OnDraggingStart(i);
+					}
 				}
+				downInPreviousFrame[i] = true;
+			}else{
+				if (isDragActive[i]){
+					OnDraggingStop();
+					isDragActive[i] = false;
+				}
+
+				downInPreviousFrame[i] = false;
 			}
 		}
 
+		if(!anybuttondown )
+			mouseover = false;
 
-		if (Input.GetMouseButtonUp (0)) {
-			foundblock = false;
+
+		if (Input.GetMouseButtonUp (0) && Input.GetMouseButtonUp (1)) {
+			Debug.Log ("Mouse up");
+			//foundblock = false;
 		}
 
-	}
-
-	void OnMouseDown(){
-		Debug.Log ("mouse down");
-		foundblock = true;
 	}
 
 	void OnMouseOver(){
-		if(Input.GetMouseButtonDown(0)){
-			//This signifies that we have clicked on the block, so we can start updating position and scale
-			foundblock = true;
-		}
+		Debug.Log ("Mouse over");
+		mouseover = true;
 	}
 
-	
-	
 }
