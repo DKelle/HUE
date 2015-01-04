@@ -28,7 +28,7 @@ public class CharacterController : MonoBehaviour {
 	void Start () {
 		//s.Start ();
 		StartCoroutine(TimedUpdate());
-		sr.color = new Color (.1f, .2f, .3f);
+
 	
 	}
 
@@ -129,15 +129,15 @@ public class CharacterController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		HSLColor charcolor = new HSLColor (sr.color);
+		HSLColor charcolor = new HSLColor (new Color(1,1,1));
 		charcolor.h += .75f;
-		charcolor.s += .001f;
+		//charcolor.s += .001f;
 		//Debug.Log ("After color change:" + charcolor.l);
 
 		Color newc = charcolor.ToRGBA ();
 		//Debug.Log ("newc: " + newc.r); 
 
-		sr.color = charcolor.ToRGBA ();
+		renderer.material.color = charcolor.ToRGBA ();
 
 	}
 }

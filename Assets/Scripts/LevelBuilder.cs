@@ -14,7 +14,6 @@ public class LevelBuilder : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		cubes = new List<GameObject>();
-		Debug.Log (typeof(string).Assembly.ImageRuntimeVersion);
 	}
 	
 	// Update is called once per frame
@@ -42,9 +41,10 @@ public class LevelBuilder : MonoBehaviour {
 			GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			//Destroy(g.collider);
 
-			Vector2 cubePosition = new Vector2();
+			Vector3 cubePosition = new Vector3();
 			cubePosition.x = Mathf.Round(ray.origin.x);
 			cubePosition.y = Mathf.Round(ray.origin.y);
+
 			g.transform.position = cubePosition;
 
 			//Make sure the new block is resizable

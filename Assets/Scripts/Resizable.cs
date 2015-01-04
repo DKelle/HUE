@@ -36,7 +36,7 @@ public class Resizable : MonoBehaviour
 		//If left click, user is resizing the block
 		if (mousebutton == 0) {
 
-			Vector2 scale = new Vector2 (transform.localScale.x + dx, transform.localScale.y + dy);
+			Vector3 scale = new Vector3 (transform.localScale.x + dx, transform.localScale.y + dy, 1);
 			Vector2 newpos = new Vector2 (transform.position.x - (dx / 2.0f), transform.position.y - (dy / 2.0f));
 
 			transform.localScale = scale;
