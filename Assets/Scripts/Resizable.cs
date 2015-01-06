@@ -95,19 +95,13 @@ public class Resizable : MonoBehaviour
 			}
 		}
 
-		if(!anybuttondown )
+		if (!anybuttondown) {
 			mouseover = false;
-
-
-		if (Input.GetMouseButtonUp (0) && Input.GetMouseButtonUp (1)) {
-			Debug.Log ("Mouse up");
-			//foundblock = false;
 		}
 
 	}
 
 	void OnMouseOver(){
-		Debug.Log ("Mouse over");
 		mouseover = true;
 	}
 

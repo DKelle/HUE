@@ -17,19 +17,27 @@ public class CharacterController : MonoBehaviour {
 	public bool[] canmove = new bool[4];
 	public bool isJumping = false;
 
+//float
+	public float r;
+	public float g;
+	public float b;
+	public float a;
+
+	public float dr = .018f;
+	public float dg = .027f;
+	public float db = .035f;
+	public float da = .04f;
+	
+	
+
+
 //Misc
-	public Transform[] startTransforms = new Transform[4];
-	public Transform[]   endTransforms = new Transform[4];
-
-	public SpriteRenderer sr;
-
+	public GameObject lightcomponent;
 
 	// Use this for initialization
 	void Start () {
-		//s.Start ();
 		StartCoroutine(TimedUpdate());
 
-	
 	}
 
 
@@ -125,19 +133,51 @@ public class CharacterController : MonoBehaviour {
 		}
 	}
 
+	void OnTriggerEnter(Collider other) {
+		Debug.Log ("why not work");
+	}
 
 	// Update is called once per frame
 	void Update () {
-
-		HSLColor charcolor = new HSLColor (new Color(1,1,1));
-		charcolor.h += .75f;
+//		Debug.Log ("Old color: " + renderer.material.color);
+		//HSLColor charcolor = new HSLColor (renderer.material.color);
+//		Debug.Log ("before color change:" + charcolor.ToString());
+		
+		//charcolor.h -= .1f;
 		//charcolor.s += .001f;
-		//Debug.Log ("After color change:" + charcolor.l);
+		//Debug.Log ("After color change:" + charcolor.ToRGBA());
 
-		Color newc = charcolor.ToRGBA ();
+		//Color newc = charcolor.ToRGBA ();
 		//Debug.Log ("newc: " + newc.r); 
 
-		renderer.material.color = charcolor.ToRGBA ();
+		//renderer.material.color = charcolor.ToRGBA ();
+		//renderer.material.color = new Color(renderer.material.color.r + .1f, 0, 0);
+
+		renderer.material.color = Step();
+
+		lightcomponent.light.color = renderer.material.color;
 
 	}
+
+	public Color Step(){
+		IndividualStep (ref r, ref dr);
+		IndividualStep (ref g, ref dg);
+		IndividualStep (ref b, ref db);
+		IndividualStep (ref a, ref da);
+		
+		return new Color (r, g, b);
+	}
+	
+	private void IndividualStep(ref float x, ref float dx){
+		//The value has become too high, reverse the direction
+		if (x + dx > 3) {
+			dx *= -1;
+		} else if (x + dx < -1) {
+			dx *= -1;
+		}
+		
+		x += dx;
+	}
+
+
 }

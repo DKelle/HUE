@@ -5,6 +5,11 @@ public struct HSLColor {
 	public float s;
 	public float l;
 	public float a;
+
+	private float dh;
+	private float ds;
+	private float dl;
+	private float da;
 	
 	
 	public HSLColor(float h, float s, float l, float a) {
@@ -12,13 +17,23 @@ public struct HSLColor {
 		this.s = s;
 		this.l = l;
 		this.a = a;
+
+		dh = .04f;
+	    ds = .03f;
+	    dl = .02f;
+	    da = .01f;
 	}
-	
+
 	public HSLColor(float h, float s, float l) {
 		this.h = h;
 		this.s = s;
 		this.l = l;
 		this.a = 1f;
+
+		dh = .04f;
+		ds = .03f;
+		dl = .02f;
+		da = .01f;
 	}
 	
 	public HSLColor(Color c) {
@@ -27,6 +42,11 @@ public struct HSLColor {
 		s = temp.s;
 		l = temp.l;
 		a = temp.a;
+
+		dh = .04f;
+     	ds = .03f;
+     	dl = .02f;
+     	da = .01f;
 	}
 	
 	public static HSLColor FromRGBA(Color c) {		
@@ -78,10 +98,14 @@ public struct HSLColor {
 		
 		if (s == 0f) {
 			r = g = b = l;
+			//Debug.Log("CASE 1: given h : " + h + ", recieved r : " + r);
+			
 		} else {
 			r = Value(m1, m2, h + 120f);
 			g = Value(m1, m2, h);
 			b = Value(m1, m2, h - 120f);
+			//Debug.Log("CASE 2: given h : " + h + ", recieved r : " + r);
+			
 		}
 		
 		return new Color(r, g, b, a);
@@ -100,6 +124,26 @@ public struct HSLColor {
 			return n1;
 		}
 	}
+
+	public Color Step(){
+		IndividualStep (ref h, ref dh);
+		IndividualStep (ref s, ref ds);
+		IndividualStep (ref l, ref dl);
+		IndividualStep (ref a, ref da);
+
+		return ToRGBA ();
+	}
+
+	private void IndividualStep(ref float x, ref float dx){
+		//The value has become too high, reverse the direction
+		if (x + dx > 5) {
+			dx *= -1;
+		} else if (x + dx < -5) {
+			dx *= -1;
+		}
+
+		x += dx;
+	}
 	
 	public static implicit operator HSLColor(Color src) {
 		return FromRGBA(src);
@@ -107,6 +151,10 @@ public struct HSLColor {
 	
 	public static implicit operator Color(HSLColor src) {
 		return src.ToRGBA();
+	}
+
+	public string ToString(){
+		return "(" + h + ", " + s + ", " + l + ", " + a + ")";
 	}
 
 }

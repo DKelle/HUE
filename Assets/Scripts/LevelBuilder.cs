@@ -87,7 +87,7 @@ public class LevelBuilder : MonoBehaviour {
 				GameObject go = cubes[i];
 
 				//Remember position and scale
-				string objectdata = go.transform.position.x + "," + go.transform.position.y + "," + go.transform.localScale.x + "," + go.transform.localScale.y;
+				string objectdata = go.transform.position.x + "," + go.transform.position.y + "," + go.transform.position.z + "," + go.transform.localScale.x + "," + go.transform.localScale.y + "," + go.transform.localScale.z;
 				file.WriteLine(objectdata);
 			}
 		}
