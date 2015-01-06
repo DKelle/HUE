@@ -21,14 +21,11 @@ public class CharacterController : MonoBehaviour {
 	public float r;
 	public float g;
 	public float b;
-	public float a;
 
-	public float dr = .018f;
-	public float dg = .027f;
-	public float db = .035f;
-	public float da = .04f;
-	
-	
+	public float dr;
+	public float dg;
+	public float db;
+
 
 
 //Misc
@@ -36,6 +33,7 @@ public class CharacterController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		renderer.material.color = new Color (3, 3, 3);
 		StartCoroutine(TimedUpdate());
 
 	}
@@ -163,7 +161,6 @@ public class CharacterController : MonoBehaviour {
 		IndividualStep (ref r, ref dr);
 		IndividualStep (ref g, ref dg);
 		IndividualStep (ref b, ref db);
-		IndividualStep (ref a, ref da);
 		
 		return new Color (r, g, b);
 	}
@@ -172,7 +169,7 @@ public class CharacterController : MonoBehaviour {
 		//The value has become too high, reverse the direction
 		if (x + dx > 3) {
 			dx *= -1;
-		} else if (x + dx < -1) {
+		} else if (x + dx < 1) {
 			dx *= -1;
 		}
 		

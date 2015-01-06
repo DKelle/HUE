@@ -18,15 +18,15 @@ public class LevelModel : MonoBehaviour {
 		for (int i = 0; i < trail.Length; i ++) {
 			//trail[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		}
-		loadLevel (level);
+		loadLevel (level, "Wall");
 		
 		StartCoroutine(TimedUpdate());
 	}
 
-	void loadLevel(int level){
+	void loadLevel(int level, string tag){
 		GameObject emptyLevel = GameObject.Find("Level");
 
-		string[] rects = System.IO.File.ReadAllLines(@"Levels/level"+level+"/walls.txt");
+		string[] rects = System.IO.File.ReadAllLines(@"Levels/level"+level+"/" + tag + ".txt");
 		char[] delimiterChars = { ',' };
 
 		foreach(string r in rects){
@@ -48,6 +48,8 @@ public class LevelModel : MonoBehaviour {
 			g.transform.localScale		= scale;
 
 			g.GetComponent<BoxCollider>().isTrigger = true;
+			g.renderer.material.color = Color.white;
+			g.tag = tag;
 
 			walls.Add (g);
 

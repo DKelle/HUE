@@ -79,7 +79,7 @@ public class LevelBuilder : MonoBehaviour {
 		//Create a directory for the new level
 		Directory.CreateDirectory ("Levels/level" + level);
 
-		using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"Levels/level" + level + "/walls.txt"))
+		using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"Levels/level" + level + "/Wall.txt"))
 		{
 			//We don't want to save the block that was placed when clicking the save button, so don't include the last block in the list
 			for (int i = 0; i < cubes.Count - 1; i ++)
