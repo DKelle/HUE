@@ -131,30 +131,25 @@ public class CharacterController : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter(Collider other) {
-		Debug.Log ("why not work");
-	}
-
 	// Update is called once per frame
 	void Update () {
-//		Debug.Log ("Old color: " + renderer.material.color);
-		//HSLColor charcolor = new HSLColor (renderer.material.color);
-//		Debug.Log ("before color change:" + charcolor.ToString());
-		
-		//charcolor.h -= .1f;
-		//charcolor.s += .001f;
-		//Debug.Log ("After color change:" + charcolor.ToRGBA());
-
-		//Color newc = charcolor.ToRGBA ();
-		//Debug.Log ("newc: " + newc.r); 
-
-		//renderer.material.color = charcolor.ToRGBA ();
-		//renderer.material.color = new Color(renderer.material.color.r + .1f, 0, 0);
 
 		renderer.material.color = Step();
 
 		lightcomponent.light.color = renderer.material.color;
 
+	}
+
+	public void Respawn(){
+		float newx = transform.position.x;
+		float newy = transform.position.y;
+		float newz = transform.position.z;
+		
+		newx = -Camera.main.orthographicSize * 2 + 3;
+		newy = Camera.main.orthographicSize;
+		newz = -Camera.main.orthographicSize * 2 + 3;
+		
+		transform.position = new Vector3 (newx, newy, newz);
 	}
 
 	public Color Step(){

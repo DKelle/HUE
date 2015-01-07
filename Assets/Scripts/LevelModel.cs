@@ -5,65 +5,146 @@ using System.Collections.Generic;
 
 public class LevelModel : MonoBehaviour {
 
-	public int level = 1;
+	public int level;
 	
 	public GameObject character;
 
 	public GameObject[] trail = new GameObject[10];
-	public List<GameObject> walls;
+
+	List<GameObject> Wall;
+	List<GameObject> Lava;
+	List<GameObject> Key;
+	List<List<GameObject>> lists;
 
 	// Use this for initialization
 	void Start () {
-		walls = new List<GameObject>();
+
+		lists = new List<List<GameObject>> ();
+		Wall = new List<GameObject>();
+		Lava = new List<GameObject>();
+		Key = new List<GameObject> ();
+		
+		lists.Add (Wall);
+		lists.Add (Lava);
+		lists.Add (Key);
+
 		for (int i = 0; i < trail.Length; i ++) {
 			//trail[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		}
-		loadLevel (level, "Wall");
+		loadLevel ();
 		
 		StartCoroutine(TimedUpdate());
 	}
 
-	void loadLevel(int level, string tag){
+	public void NextLevel(){
+		character.GetComponent<CharacterController>().Respawn ();
+
+		level ++;
+		loadLevel ();
+	}
+
+	void loadLevel(){
 		GameObject emptyLevel = GameObject.Find("Level");
+		
+		string[] levelcomponents = new string[] {"Wall", "Lava", "Key"};
+		for (int i = 0; i < lists.Count; i++){
+			string tag = levelcomponents[i];
 
-		string[] rects = System.IO.File.ReadAllLines(@"Levels/level"+level+"/" + tag + ".txt");
-		char[] delimiterChars = { ',' };
+			string[] rects = System.IO.File.ReadAllLines(@"Levels/level"+level+"/" + tag + ".txt");
+			char[] delimiterChars = { ',' };
 
-		foreach(string r in rects){
-		//string r = rects [0];
-			string[] newr = r.Split(delimiterChars);
-			GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			foreach(string r in rects){
+			//string r = rects [0];
+				string[] newr = r.Split(delimiterChars);
+				GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-			Vector3 pos = new Vector3();
-			Vector3 scale = new Vector3();
+				Vector3 pos = new Vector3();
+				Vector3 scale = new Vector3();
 
-			pos.x = float.Parse(newr[0]);
-			pos.y = float.Parse(newr[1]);
-			pos.z = float.Parse(newr[2]);
-			scale.x = float.Parse(newr[3]);
-			scale.y = float.Parse(newr[4]);
-			scale.z = float.Parse(newr[5]);
+				pos.x = float.Parse(newr[0]);
+				pos.y = float.Parse(newr[1]);
+				pos.z = float.Parse(newr[2]);
+				scale.x = float.Parse(newr[3]);
+				scale.y = float.Parse(newr[4]);
+				scale.z = float.Parse(newr[5]);
 
-			g.transform.position		= pos;
-			g.transform.localScale		= scale;
+				g.transform.position		= pos;
+				g.transform.localScale		= scale;
 
-			g.GetComponent<BoxCollider>().isTrigger = true;
-			g.renderer.material.color = Color.white;
-			g.tag = tag;
+				g.GetComponent<BoxCollider>().isTrigger = true;
+				g.renderer.material.color = Color.white;
+				g.tag = tag;
 
-			walls.Add (g);
 
-			//Add all of the walls as children of emptyLevel
-			g.transform.parent = emptyLevel.transform;
+				//Add all of the walls as children of emptyLevel
+				g.transform.parent = emptyLevel.transform;
 
-			//Change layer to 'Level', so the light hits these blocks
-			g.layer = 8;
+				//Change layer to 'Level', so the light hits these blocks
+				g.layer = 8;
 
-			Debug.Log(r);
+				if(levelcomponents[i].Equals("Lava")){
+					g.renderer.material.color = Color.red;
+				}
+
+				lists[i].Add (g);
+
+				Debug.Log(r);
+			}
 		}
 
+		//After we have loaded all gameobjects to the level, make sure they all have the CollisionDetection script
+		foreach (Transform child in emptyLevel.transform) {
+			child.gameObject.AddComponent<CollisionDetection>();
+		}
 	}
-	
+
+	public void Die(){
+		for(int i = 0; i < trail.Length; i ++){
+			Destroy (trail[i]);
+		}
+		character.GetComponent<CharacterController>(). Respawn ();
+		
+	}
+
+	void Update(){
+		float newx = character.transform.position.x;
+		float newy = character.transform.position.y;
+		float newz = character.transform.position.z;
+
+		bool changedpos = false;
+		//If the player goes off screen, make sure we reset 
+		if (character.transform.position.x < -Camera.main.orthographicSize*2 + 3) {
+			changedpos = true;
+			newx = Camera.main.orthographicSize*2 - 3;
+		}else if(character.transform.position.x > Camera.main.orthographicSize*2 - 3){
+			changedpos = true;
+			newx = -Camera.main.orthographicSize*2 + 3;
+		}
+
+		if (character.transform.position.z < -Camera.main.orthographicSize*2 - 3) {
+			changedpos = true;
+			newz = Camera.main.orthographicSize*2 - 3;
+		}else if(character.transform.position.z > Camera.main.orthographicSize*2 - 3){
+			changedpos = true;
+			newz = -Camera.main.orthographicSize*2 + 3;
+		}
+
+		if (character.transform.position.y < -Camera.main.orthographicSize) {
+			changedpos = true;
+			newy = Camera.main.orthographicSize;
+		}else if(character.transform.position.y > Camera.main.orthographicSize){
+			changedpos = true;
+			newy = -Camera.main.orthographicSize;
+		}
+
+
+		Vector3 newpos = new Vector3 (newx, newy, newz);
+		character.transform.position = newpos;
+
+
+
+	}
+
 	// Update is called once per frame
 	IEnumerator TimedUpdate () {
 		while (true) {
@@ -107,5 +188,6 @@ public class LevelModel : MonoBehaviour {
 		}
 
 	}
+
 	
 }

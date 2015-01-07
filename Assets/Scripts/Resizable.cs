@@ -83,8 +83,9 @@ public class Resizable : MonoBehaviour
 						isDragActive[i] = true;
 						OnDraggingStart(i);
 					}
+				}else if(mouseover){
+					downInPreviousFrame[i] = true;
 				}
-				downInPreviousFrame[i] = true;
 			}else{
 				if (isDragActive[i]){
 					OnDraggingStop();
