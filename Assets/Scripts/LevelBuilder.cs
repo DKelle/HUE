@@ -45,7 +45,7 @@ public class LevelBuilder : MonoBehaviour {
 
 		for (int i = 0; i < lists.Count; i ++) {
 			if (Input.GetMouseButtonDown (i) && createblockfromclick) {
-				Debug.Log("Placing block");
+				//Debug.Log("Placing block");
 				
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 				

@@ -3,6 +3,10 @@ using System.Collections;
 
 public class CharacterModel : MonoBehaviour {
 
+//int
+	private int offset = 2;
+		
+//GameObject
 	public GameObject[] trail = new GameObject[10];
 
 	// Use this for initialization
@@ -12,7 +16,6 @@ public class CharacterModel : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		int offset = 2;
 
 		float newx = transform.position.x;
 		float newy = transform.position.y;
@@ -53,7 +56,19 @@ public class CharacterModel : MonoBehaviour {
 		for(int i = 0; i < trail.Length; i ++){
 			Destroy (trail[i]);
 		}
-		GetComponent<CharacterController>(). Respawn ();
+		Respawn ();
+	}
+
+	public void Respawn(){
+		float newx = transform.position.x;
+		float newy = transform.position.y;
+		float newz = transform.position.z;
+		
+		newx = -Camera.main.orthographicSize * 2 + offset + 2;
+		newy = Camera.main.orthographicSize;
+		newz = -Camera.main.orthographicSize * 2 + offset + 2;
+		
+		transform.position = new Vector3 (newx, newy, newz);
 	}
 
 	// Update is called once per frame

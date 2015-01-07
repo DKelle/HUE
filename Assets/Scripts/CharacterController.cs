@@ -140,18 +140,6 @@ public class CharacterController : MonoBehaviour {
 
 	}
 
-	public void Respawn(){
-		float newx = transform.position.x;
-		float newy = transform.position.y;
-		float newz = transform.position.z;
-		
-		newx = -Camera.main.orthographicSize * 2 + 3;
-		newy = Camera.main.orthographicSize;
-		newz = -Camera.main.orthographicSize * 2 + 3;
-		
-		transform.position = new Vector3 (newx, newy, newz);
-	}
-
 	public Color Step(){
 		IndividualStep (ref r, ref dr);
 		IndividualStep (ref g, ref dg);
