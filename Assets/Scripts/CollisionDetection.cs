@@ -22,7 +22,7 @@ public class CollisionDetection : MonoBehaviour {
 		Debug.Log ("Other" + other.tag);
 		Debug.Log ("Me" + collider.tag);
 		if(collider.tag.Equals("Lava")){
-			levelmodel.GetComponent<LevelModel>().Die();
+			character.GetComponent<CharacterModel>().Die();
 		}else if(collider.tag.Equals("Key")){
 			levelmodel.GetComponent<LevelModel>().NextLevel();
 		}
