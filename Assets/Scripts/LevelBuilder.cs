@@ -5,17 +5,23 @@ using System.IO;
 
 public class LevelBuilder : MonoBehaviour {
 
+//GameObject
 	List<GameObject> Wall;
 	List<GameObject> Lava;
 	List<GameObject> Key;
 	List<List<GameObject>> lists;
 
+//bool
 	private bool createblockfromclick = false;
 
-	Rect saverect;
+//string
+	public string blockToPlace;
+
 
 	// Use this for initialization
 	void Start () {
+		blockToPlace = "Wall";
+
 		lists = new List<List<GameObject>> ();
 		Wall = new List<GameObject>();
 		Lava = new List<GameObject>();
@@ -37,60 +43,78 @@ public class LevelBuilder : MonoBehaviour {
 		//Before we add a new block, make sure that the user isn't trying to resize an already placed block
 		foreach (List<GameObject> list in lists) {
 			foreach(GameObject g in list){
-				if(g.GetComponent<Resizable>().mouseover){
+				if(g.GetComponent<Resizable>() != null && g.GetComponent<Resizable>().mouseover){
 					createblockfromclick = false;
 				}
 			}
 		}
 
-		for (int i = 0; i < lists.Count; i ++) {
-			if (Input.GetMouseButtonDown (i) && createblockfromclick) {
-				//Debug.Log("Placing block");
-				
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				
-				//We have either just created a new block, or are resizing a block we have already place
-				
-				//Create the cube, and place it in the correct position
-				GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				//Destroy(g.collider);
-				
-				Vector3 cubePosition = new Vector3();
-				cubePosition.x = Mathf.Round(ray.origin.x);
-				cubePosition.y = Mathf.Round(ray.origin.y);
-				
-				g.transform.position = cubePosition;
-				
-				//Make sure the new block is resizable
+		if (Input.GetMouseButtonDown (0) && createblockfromclick) {
+			Debug.Log("Placing block");
+			
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			
+			//We have either just created a new block, or are resizing a block we have already place
+			
+			//Create the cube, and place it in the correct position
+			GameObject g = (blockToPlace.Equals("Key")) ? Instantiate( Resources.Load("Heart3D", typeof(GameObject)) as GameObject) as GameObject : GameObject.CreatePrimitive(PrimitiveType.Cube);
+			
+			//Destroy(g.collider);
+			
+			Vector3 cubePosition = new Vector3();
+			cubePosition.x = Mathf.Round(ray.origin.x);
+			cubePosition.y = Mathf.Round(ray.origin.y);
+			
+			g.transform.position = cubePosition;
+			
+			//Make sure the new block is resizable
+			if(!blockToPlace.Equals("Key")){
 				g.AddComponent<Resizable>();
-				
-				//Make Lava red
-				if( i == 1)
-					g.renderer.material.color = Color.red;
 
 				//Make sure the player can rezise without having to release, and reclick
 				g.GetComponent<Resizable>().mouseover = true;
-				
-				lists[i].Add(g);
-				//Debug.Log(ray.origin.x);
-
 			}
+			
+			//Make Lava red
+			if( blockToPlace.Equals("Lava"))
+				g.renderer.material.color = Color.red;
+
+
+			int i = 0;
+			if(blockToPlace.Equals("Lava")){
+				lists[1].Add(g);
+			}else if(blockToPlace.Equals ("Wall")){
+				lists[0].Add (g);
+			}
+			else{
+				//There can only be one key
+				if(lists[2].Count > 0){
+					Destroy(lists[2][0]);
+					lists[2].Clear();
+				}
+				Quaternion rot = new Quaternion(0, 0, 0, 0);
+				g.transform.localRotation = rot;
+				lists[2].Add(g);
+			}
+			//Debug.Log(ray.origin.x);
+
 		}
 	}
 
-
-	void OnGUI() {
-		//GUI.Box (new Rect (0,0,10,9), "Loader Menu");
-		saverect = new Rect (0, 0, 100, 100);
-		if (GUI.Button (saverect, "Save")) {
-			createblockfromclick = false;
-			Debug.Log ("Saving");
-			SaveWorld();
+	public void RemoveLastBlock(){
+		if(blockToPlace.Equals ("Wall")){
+			Destroy(Wall[Wall.Count - 1]);
+			Wall.RemoveAt(Wall.Count - 1);
+		}else if(blockToPlace.Equals ("Lava")){
+			Destroy(Lava[Lava.Count - 1]);
+			Lava.RemoveAt(Lava.Count - 1);
+		}else{
+			Destroy(Key[0]);
+			Key.Clear();
 		}
-		
 	}
 
-	void SaveWorld(){
+	public void SaveWorld(){
 		DirectoryInfo di = new DirectoryInfo ("Levels");
 		int level = di.GetDirectories ().Length + 1;
 

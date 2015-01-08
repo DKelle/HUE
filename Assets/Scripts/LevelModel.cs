@@ -40,6 +40,14 @@ public class LevelModel : MonoBehaviour {
 	}
 
 	public void NextLevel(){
+		for (int i = 0; i < lists.Count; i++) {
+			List<GameObject> component = lists [i];
+			for (int j = 0; j < component.Count; j++) {
+				Destroy (component[j]);
+			}
+			component.Clear ();
+		}
+
 		character.GetComponent<CharacterModel>().Respawn ();
 
 		level ++;
@@ -98,6 +106,7 @@ public class LevelModel : MonoBehaviour {
 					g.renderer.material.color = Color.red;
 				}else if(tag.Equals("Key")){
 					key = g;
+					//InitKey();
 				}
 
 				lists[i].Add (g);
@@ -111,6 +120,17 @@ public class LevelModel : MonoBehaviour {
 			child.gameObject.AddComponent<CollisionDetection>();
 		}
 	}
+
+	void InitKey(){
+		Light keylight = key.AddComponent<Light>() as Light;
+		
+		keylight.type = LightType.Directional;
+		keylight.transform.position = new Vector3 (0, 0, -3.5f);
+		keylight.range = 10;
+		keylight.spotAngle = 100;
+		keylight.intensity = .1f;
+
+	}
 	
 
 	// Update is called once per frame
@@ -119,8 +139,13 @@ public class LevelModel : MonoBehaviour {
 		float theta;
 
 		while (true) {
-			key.transform.Rotate(Vector3.up * 5);
-			
+			if(key != null){
+				key.transform.Rotate(Vector3.up * 5);
+				key.renderer.material.color = character.renderer.material.color;
+				//key.GetComponent<Light>().renderer.material.color = character.renderer.material.color;
+
+			}
+
 			//Wait x seconds before we preform another update
 			yield return new WaitForSeconds (.025f);
 
