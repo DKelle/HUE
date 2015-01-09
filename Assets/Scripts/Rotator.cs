@@ -3,8 +3,8 @@ using System.Collections;
 
 public class Rotator : MonoBehaviour {
 
-	public Vector3 axis = Vector3.up;
-	public float speed = 5;
+	Vector3 axis = Vector3.up;
+	float speed = 5;
 	
 	// Use this for initialization
 	void Start () {

@@ -23,18 +23,16 @@ public class LevelModel : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		levelcomponents = new string[] {"Wall", "Lava", "Heart", "DraggableWall"};
+		levelcomponents = new string[] {"Wall", "Lava", "Heart"};
 		
 		lists = new List<List<GameObject>> ();
 		Wall = new List<GameObject>();
 		Lava = new List<GameObject>();
 		Heart = new List<GameObject> ();
-		DraggableWall = new List<GameObject> ();
 
 		lists.Add (Wall);
 		lists.Add (Lava);
 		lists.Add (Heart);
-		lists.Add (DraggableWall);
 
 
 		loadLevel ();
@@ -56,6 +54,8 @@ public class LevelModel : MonoBehaviour {
 		character.GetComponent<CharacterModel>().Respawn ();
 
 		level ++;
+		Debug.Log ("Entering level " + level);
+		
 		loadLevel ();
 	}
 
@@ -141,6 +141,10 @@ public class LevelModel : MonoBehaviour {
 	IEnumerator TimedUpdate () {
 
 		while (true) {
+			if(Input.GetKeyDown(KeyCode.R)){
+				character.GetComponent<CharacterModel>().Die();
+			}
+
 			if(key != null){
 				key.transform.Rotate(Vector3.up * 5);
 				key.renderer.material.color = character.renderer.material.color;

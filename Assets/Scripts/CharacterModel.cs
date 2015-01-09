@@ -70,9 +70,9 @@ public class CharacterModel : MonoBehaviour {
 		float newy = transform.position.y;
 		float newz = transform.position.z;
 		
-		newx = -Camera.main.orthographicSize * 2 + offset + 2;
+		newx = -Camera.main.orthographicSize * 2 + 5;
 		newy = Camera.main.orthographicSize;
-		newz = -Camera.main.orthographicSize * 2 + offset + 2;
+		newz = -Camera.main.orthographicSize * 2 + 5;
 		
 		transform.position = new Vector3 (newx, newy, newz);
 	}
@@ -87,14 +87,26 @@ public class CharacterModel : MonoBehaviour {
 				if(trail[i+1] != null){
 					if(trail[i] == null){
 						trail[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+						//make the trail rotate
+						//trail[i].AddComponent<Rotator>();
+						
+						//trail[i].GetComponent<Rotator>().SetAxis(Vector3.forward);
+						//trail[i].GetComponent<Rotator>().SetSpeed (1);
 					}
 					
 					Color oldcolor = trail [i + 1].renderer.material.color;
+					Vector3 oldscale = trail[i+1].transform.localScale;
 					//trail [i] = trail[i+1].GetComponent<SpriteRenderer> ().sprite;
+
+					float shrinkspeed = .075f;
 					trail [i].transform.position = trail[i+1].transform.position;
-					trail [i].transform.localScale = trail[i+1].transform.localScale;
+					trail [i].transform.localScale = new Vector3(oldscale.x - shrinkspeed, oldscale.y - shrinkspeed, oldscale.z - shrinkspeed);
 					trail [i].renderer.material.color = new Color(oldcolor.r, oldcolor.g, oldcolor.b, oldcolor.a - .1f);
 					trail [i].collider.enabled = false;
+
+
+
 					//Debug.Log ("Color: " + trail[i].renderer.material.color);
 					
 				}

@@ -147,14 +147,19 @@ public class LevelBuilder : MonoBehaviour {
 
 		for (int i = 0; i < lists.Count; i ++) {
 			string component = levelcomponents[i];
-			using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"Levels/level" + level + "/" + component + ".txt")) {
+
+			//We want to write these walls in Wall.txt, but we have to know if we should make them draggable
+			bool draggable = component.Equals ("DraggableWall");
+			if(draggable)
+				component = "Wall";
+			using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"Levels/level" + level + "/" + component + ".txt", true)) {
 				//We don't want to save the block that was placed when clicking the save button, so don't include the last block in the list
 				for (int j = 0; j < lists[i].Count; j ++) {
 					GameObject go = lists[i][j];
 				
 					//Remember position and scale
 					string objectdata = go.transform.position.x + "," + go.transform.position.y + "," + go.transform.position.z + "," + go.transform.localScale.x + "," + go.transform.localScale.y + "," + go.transform.localScale.z;
-					if(component.Equals("DraggableWall"))
+					if(draggable)
 						objectdata += ",true";
 					file.WriteLine (objectdata);
 				}
