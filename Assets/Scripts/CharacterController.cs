@@ -17,23 +17,11 @@ public class CharacterController : MonoBehaviour {
 	public bool[] canmove = new bool[4];
 	public bool isJumping = false;
 
-//float
-	public float r;
-	public float g;
-	public float b;
-
-	public float dr;
-	public float dg;
-	public float db;
-
-
-
 //Misc
 	public GameObject lightcomponent;
 
 	// Use this for initialization
 	void Start () {
-		renderer.material.color = new Color (3, 3, 3);
 		StartCoroutine(TimedUpdate());
 
 	}
@@ -133,31 +121,10 @@ public class CharacterController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-
-		renderer.material.color = Step();
-
 		lightcomponent.light.color = renderer.material.color;
-
 	}
 
-	public Color Step(){
-		IndividualStep (ref r, ref dr);
-		IndividualStep (ref g, ref dg);
-		IndividualStep (ref b, ref db);
-		
-		return new Color (r, g, b);
-	}
-	
-	private void IndividualStep(ref float x, ref float dx){
-		//The value has become too high, reverse the direction
-		if (x + dx > 3) {
-			dx *= -1;
-		} else if (x + dx < 1) {
-			dx *= -1;
-		}
-		
-		x += dx;
-	}
+
 
 
 }

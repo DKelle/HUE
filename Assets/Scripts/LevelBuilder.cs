@@ -8,9 +8,11 @@ public class LevelBuilder : MonoBehaviour {
 //GameObject
 	List<GameObject> Wall;
 	List<GameObject> Lava;
-	List<GameObject> Key;
+	List<GameObject> Heart;
+	List<GameObject> DraggableWall;
 	List<List<GameObject>> lists;
 
+	GameObject oldHeart;
 //bool
 	private bool createblockfromclick = false;
 
@@ -20,16 +22,22 @@ public class LevelBuilder : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		oldHeart = new GameObject ();
+		oldHeart.SetActive (false);
+
 		blockToPlace = "Wall";
 
 		lists = new List<List<GameObject>> ();
 		Wall = new List<GameObject>();
 		Lava = new List<GameObject>();
-		Key = new List<GameObject> ();
+		Heart = new List<GameObject> ();
+		DraggableWall = new List<GameObject> ();
+		
 
 		lists.Add (Wall);
 		lists.Add (Lava);
-		lists.Add (Key);
+		lists.Add (Heart);
+		lists.Add (DraggableWall);
 		
 	}
 	
@@ -57,7 +65,7 @@ public class LevelBuilder : MonoBehaviour {
 			//We have either just created a new block, or are resizing a block we have already place
 			
 			//Create the cube, and place it in the correct position
-			GameObject g = (blockToPlace.Equals("Key")) ? Instantiate( Resources.Load("Heart3D", typeof(GameObject)) as GameObject) as GameObject : GameObject.CreatePrimitive(PrimitiveType.Cube);
+			GameObject g = (blockToPlace.Equals("Heart")) ? Instantiate( Resources.Load("Heart3D", typeof(GameObject)) as GameObject) as GameObject : GameObject.CreatePrimitive(PrimitiveType.Cube);
 			
 			//Destroy(g.collider);
 			
@@ -68,11 +76,15 @@ public class LevelBuilder : MonoBehaviour {
 			g.transform.position = cubePosition;
 			
 			//Make sure the new block is resizable
-			if(!blockToPlace.Equals("Key")){
+			if(!blockToPlace.Equals("Heart")){
 				g.AddComponent<Resizable>();
 
 				//Make sure the player can rezise without having to release, and reclick
 				g.GetComponent<Resizable>().mouseover = true;
+			}else{
+				g.AddComponent<ColorChanger>();
+				g.AddComponent<Rotator>();
+				
 			}
 			
 			//Make Lava red
@@ -86,15 +98,19 @@ public class LevelBuilder : MonoBehaviour {
 			}else if(blockToPlace.Equals ("Wall")){
 				lists[0].Add (g);
 			}
-			else{
-				//There can only be one key
+			else if(blockToPlace.Equals("Heart")){
+				//There can only be one Heart
 				if(lists[2].Count > 0){
+					oldHeart = GameObject.Instantiate(lists[2][0]) as GameObject;
+					oldHeart.SetActive(false);
 					Destroy(lists[2][0]);
 					lists[2].Clear();
 				}
 				Quaternion rot = new Quaternion(0, 0, 0, 0);
 				g.transform.localRotation = rot;
 				lists[2].Add(g);
+			}else{
+				lists[3].Add(g);
 			}
 			//Debug.Log(ray.origin.x);
 
@@ -108,9 +124,15 @@ public class LevelBuilder : MonoBehaviour {
 		}else if(blockToPlace.Equals ("Lava")){
 			Destroy(Lava[Lava.Count - 1]);
 			Lava.RemoveAt(Lava.Count - 1);
+		}else if(blockToPlace.Equals("Heart")){
+			Destroy(Heart[0]);
+			Heart.Clear();
+			Heart.Add (GameObject.Instantiate(oldHeart) as GameObject);
+			Heart[0].SetActive(true);
+			Debug.Log ("Placing oldheart");
 		}else{
-			Destroy(Key[0]);
-			Key.Clear();
+			Destroy(DraggableWall[DraggableWall.Count - 1]);
+			DraggableWall.RemoveAt(DraggableWall.Count - 1);
 		}
 	}
 
@@ -121,7 +143,7 @@ public class LevelBuilder : MonoBehaviour {
 		//Create a directory for the new level
 		Directory.CreateDirectory ("Levels/level" + level);
 
-		string[] levelcomponents = new string[]{"Wall", "Lava", "Key"};
+		string[] levelcomponents = new string[]{"Wall", "Lava", "Heart", "DraggableWall"};
 
 		for (int i = 0; i < lists.Count; i ++) {
 			string component = levelcomponents[i];
@@ -132,6 +154,8 @@ public class LevelBuilder : MonoBehaviour {
 				
 					//Remember position and scale
 					string objectdata = go.transform.position.x + "," + go.transform.position.y + "," + go.transform.position.z + "," + go.transform.localScale.x + "," + go.transform.localScale.y + "," + go.transform.localScale.z;
+					if(component.Equals("DraggableWall"))
+						objectdata += ",true";
 					file.WriteLine (objectdata);
 				}
 			}

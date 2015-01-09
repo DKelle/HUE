@@ -22,9 +22,10 @@ public class CollisionDetection : MonoBehaviour {
 	
 		if(collider.tag.Equals("Lava")){
 			character.GetComponent<CharacterModel>().Die();
-		}else if(collider.tag.Equals("Key")){
-			Debug.Log ("Collision with key detected");
-			levelmodel.GetComponent<LevelModel>().NextLevel();
+		}else if(collider.tag.Equals("Heart")){
+			//Debug.Log ("Collision with key detected");
+			if(levelmodel.GetComponent<LevelModel>() != null)
+				levelmodel.GetComponent<LevelModel>().NextLevel();
 		}
 	}
 }

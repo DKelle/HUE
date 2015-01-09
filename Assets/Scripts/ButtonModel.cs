@@ -11,6 +11,12 @@ public class ButtonModel : MonoBehaviour {
 		Debug.Log ("Wall");
 	}
 
+	public void SelectDraggableWall(){
+		lb.RemoveLastBlock ();
+		lb.blockToPlace = "DraggableWall";
+		Debug.Log ("Draggable Wall");
+	}
+	
 	public void SelectLava(){
 		lb.RemoveLastBlock ();
 		lb.blockToPlace = "Lava";
@@ -18,16 +24,17 @@ public class ButtonModel : MonoBehaviour {
 		
 	}
 
-	public void SelectKey(){
+	public void SelectHeart(){
 		lb.RemoveLastBlock ();
-		lb.blockToPlace = "Key";
-		Debug.Log ("Key");
+		lb.blockToPlace = "Heart";
+		Debug.Log ("Heart");
 		
 	}
 
-	public void Cancel(){
+	public void Undo(){
 		lb.RemoveLastBlock ();
-		Debug.Log ("Cancelling");
+		lb.RemoveLastBlock ();
+		Debug.Log ("Undo");
 	}
 
 	public void Save(){

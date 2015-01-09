@@ -53,13 +53,19 @@ public class CharacterModel : MonoBehaviour {
 	}
 
 	public void Die(){
-		for(int i = 0; i < trail.Length; i ++){
-			Destroy (trail[i]);
-		}
+		ClearTrail ();
 		Respawn ();
 	}
 
+	public void ClearTrail(){
+		for(int i = 0; i < trail.Length; i ++){
+			Destroy (trail[i]);
+		}
+	}
+
 	public void Respawn(){
+		GetComponent<CharacterController> ().isJumping = false;
+
 		float newx = transform.position.x;
 		float newy = transform.position.y;
 		float newz = transform.position.z;
