@@ -21,6 +21,9 @@ public class LevelModel : MonoBehaviour {
 	List<GameObject> DraggableWall;
 	List<List<GameObject>> lists;
 
+//Texture
+	Texture2D text = null;
+
 	// Use this for initialization
 	void Start () {
 		levelcomponents = new string[] {"Wall", "Lava", "Heart"};
@@ -104,7 +107,15 @@ public class LevelModel : MonoBehaviour {
 				//Change layer to 'Level', so the light hits these blocks
 				g.layer = 8;
 
-				if(tag.Equals("Lava")){
+
+				if(tag.Equals("Wall")){
+					//Don't render the game object. Instead, we will later draw a rect around the object
+					//g.GetComponent<MeshRenderer>().enabled = false;
+					//g.renderer.material.SetTexture("", GetTexture());
+					g.renderer.material.mainTexture = GetTexture();
+					
+				}else if(tag.Equals("Lava")){
+					g.renderer.material.mainTexture = GetTexture();
 					g.renderer.material.color = Color.red;
 				}else if(tag.Equals("Heart")){
 					key = g;
@@ -112,6 +123,8 @@ public class LevelModel : MonoBehaviour {
 					key.AddComponent<ColorChanger>();
 					//InitHeart();
 				}
+
+				
 
 				lists[i].Add (g);
 
@@ -135,7 +148,65 @@ public class LevelModel : MonoBehaviour {
 		keylight.intensity = .1f;
 
 	}
-	
+
+	void OnGUI(){
+		
+
+		Vector3[] pos = new Vector3[8];
+		foreach(GameObject ob in Wall){
+			Bounds b = ob.renderer.bounds;
+
+
+			//Get all 8 points
+			pos[0] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x, b.center.y + b.extents.y, b.center.z + b.extents.z));
+			pos[1] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x, b.center.y + b.extents.y, b.center.z - b.extents.z));
+			pos[2] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x, b.center.y - b.extents.y, b.center.z + b.extents.z));
+			pos[3] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x, b.center.y - b.extents.y, b.center.z - b.extents.z));
+			pos[4] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x, b.center.y + b.extents.y, b.center.z + b.extents.z));
+			pos[5] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x, b.center.y + b.extents.y, b.center.z - b.extents.z));
+			pos[6] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x, b.center.y - b.extents.y, b.center.z + b.extents.z));
+			pos[7] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x, b.center.y - b.extents.y, b.center.z - b.extents.z));
+
+			///Move into visible screen
+			for(int i = 0; i < pos.Length; i++){
+				pos[i].y = Screen.height - pos[i].y;
+			}
+
+			//Caclulate min and max
+			Vector3 min = pos[0];
+			Vector3 max = pos[0];
+			
+			for(int i = 0; i < pos.Length; i++){
+				min = Vector3.Min (min, pos[i]);
+				max = Vector3.Max (max, pos[i]);
+			}
+
+			//Construct the rect
+			Rect r = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+			GUI.color = Color.white;
+			//GUI.Box(r, GetTexture());
+			
+		}
+	}
+
+	public Texture2D GetTexture(){
+		Debug.Log ("Getting textuer");
+		string path = "Assets/construction_paper.png";
+		if(text != null){
+			return text;
+		}
+
+		if(System.IO.File.Exists(path)){
+			byte[] fileData = System.IO.File.ReadAllBytes (path);
+			text = new Texture2D (1, 1);
+			text.LoadImage (fileData);
+		}else{
+			Debug.Log ("Does not exist");
+		}
+		return text;
+
+	}
+
 
 	// Update is called once per frame
 	IEnumerator TimedUpdate () {
