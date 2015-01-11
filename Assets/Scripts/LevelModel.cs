@@ -96,7 +96,6 @@ public class LevelModel : MonoBehaviour {
 
 				if(g.GetComponent<BoxCollider>() != null)
 					g.GetComponent<BoxCollider>().isTrigger = true;
-				g.renderer.material.color = Color.white;
 				g.tag = tag;
 
 
@@ -110,15 +109,18 @@ public class LevelModel : MonoBehaviour {
 
 				if(tag.Equals("Wall")){
 					//Don't render the game object. Instead, we will later draw a rect around the object
-					g.GetComponent<MeshRenderer>().enabled = false;
+					//g.GetComponent<MeshRenderer>().enabled = false;
 					//g.renderer.material.SetTexture("", GetTexture());
 					g.AddComponent<BoundBoxes_BoundBox>();
 					g.GetComponent<BoundBoxes_BoundBox>().lineColor = Color.white;
+					g.renderer.material.color = Color.gray;
 					g.renderer.material.mainTexture = GetTexture();
 					
 				}else if(tag.Equals("Lava")){
 					g.renderer.material.mainTexture = GetTexture();
 					g.renderer.material.color = Color.red;
+					g.AddComponent<BoundBoxes_BoundBox>();
+					g.GetComponent<BoundBoxes_BoundBox>().lineColor = Color.white;
 				}else if(tag.Equals("Heart")){
 					key = g;
 					key.AddComponent<Rotator>();
