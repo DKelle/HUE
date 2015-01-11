@@ -61,6 +61,7 @@ public class BoundBoxes_BoundBox : MonoBehaviour {
 	}
 	
 	void LateUpdate() {
+		Refresh();
 		cameralines.setOutlines(lines,lineColor);
 	}
 	
@@ -143,10 +144,12 @@ public class BoundBoxes_BoundBox : MonoBehaviour {
 			lines[i+8,1] = corners[i1];
 		}
 	}
-	
-	void OnMouseDown() {
-		if(permanent) return;
-		enabled = !enabled;
+
+
+	void Refresh(){
+		Debug.Log ("refreshing");
+		calculateBounds ();
+		setPoints ();
+		setLines ();
 	}
-	
 }
