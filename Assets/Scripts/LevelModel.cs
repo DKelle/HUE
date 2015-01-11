@@ -110,8 +110,10 @@ public class LevelModel : MonoBehaviour {
 
 				if(tag.Equals("Wall")){
 					//Don't render the game object. Instead, we will later draw a rect around the object
-					//g.GetComponent<MeshRenderer>().enabled = false;
+					g.GetComponent<MeshRenderer>().enabled = false;
 					//g.renderer.material.SetTexture("", GetTexture());
+					g.AddComponent<BoundBoxes_BoundBox>();
+					g.GetComponent<BoundBoxes_BoundBox>().lineColor = Color.white;
 					g.renderer.material.mainTexture = GetTexture();
 					
 				}else if(tag.Equals("Lava")){
@@ -148,46 +150,7 @@ public class LevelModel : MonoBehaviour {
 		keylight.intensity = .1f;
 
 	}
-
-	void OnGUI(){
-		
-
-		Vector3[] pos = new Vector3[8];
-		foreach(GameObject ob in Wall){
-			Bounds b = ob.renderer.bounds;
-
-
-			//Get all 8 points
-			pos[0] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x, b.center.y + b.extents.y, b.center.z + b.extents.z));
-			pos[1] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x, b.center.y + b.extents.y, b.center.z - b.extents.z));
-			pos[2] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x, b.center.y - b.extents.y, b.center.z + b.extents.z));
-			pos[3] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x, b.center.y - b.extents.y, b.center.z - b.extents.z));
-			pos[4] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x, b.center.y + b.extents.y, b.center.z + b.extents.z));
-			pos[5] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x, b.center.y + b.extents.y, b.center.z - b.extents.z));
-			pos[6] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x, b.center.y - b.extents.y, b.center.z + b.extents.z));
-			pos[7] = Camera.main.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x, b.center.y - b.extents.y, b.center.z - b.extents.z));
-
-			///Move into visible screen
-			for(int i = 0; i < pos.Length; i++){
-				pos[i].y = Screen.height - pos[i].y;
-			}
-
-			//Caclulate min and max
-			Vector3 min = pos[0];
-			Vector3 max = pos[0];
-			
-			for(int i = 0; i < pos.Length; i++){
-				min = Vector3.Min (min, pos[i]);
-				max = Vector3.Max (max, pos[i]);
-			}
-
-			//Construct the rect
-			Rect r = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
-			GUI.color = Color.white;
-			//GUI.Box(r, GetTexture());
-			
-		}
-	}
+	
 
 	public Texture2D GetTexture(){
 		Debug.Log ("Getting textuer");
