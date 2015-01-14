@@ -40,6 +40,16 @@ public class LevelModel : MonoBehaviour {
 		StartCoroutine(TimedUpdate());
 	}
 
+	void Update(){
+		if(Input.GetKeyDown(KeyCode.R)){
+			character.GetComponent<CharacterModel>().Die();
+		}
+
+		if(Input.GetKeyDown(KeyCode.I)){
+			NextLevel();
+		}
+	}
+		
 	public void NextLevel(){
 		character.GetComponent<CharacterModel> ().ClearTrail ();
 
@@ -128,7 +138,9 @@ public class LevelModel : MonoBehaviour {
 					//InitHeart();
 				}
 
-				
+				//Tile the texture, instead of stretching it
+				Vector3 texturescale = new Vector3(g.transform.localScale.x/5, g.transform.localScale.y/5);
+				g.renderer.material.mainTextureScale = texturescale;
 
 				lists[i].Add (g);
 
@@ -157,9 +169,7 @@ public class LevelModel : MonoBehaviour {
 	IEnumerator TimedUpdate () {
 
 		while (true) {
-			if(Input.GetKeyDown(KeyCode.R)){
-				character.GetComponent<CharacterModel>().Die();
-			}
+
 
 			if(key != null){
 				key.transform.Rotate(Vector3.up * 5);
