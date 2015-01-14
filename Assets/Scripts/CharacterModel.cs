@@ -15,7 +15,8 @@ public class CharacterModel : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		StartCoroutine (TimedUpdate());
-		renderer.material.mainTexture = GetTexture ();
+
+		text = TextureModel.GetTexture("Assets/Textures/construction_paper.png");
 	}
 	
 	// Update is called once per frame
@@ -91,7 +92,7 @@ public class CharacterModel : MonoBehaviour {
 				if(trail[i+1] != null){
 					if(trail[i] == null){
 						trail[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
-						trail[i].renderer.material.mainTexture = GetTexture();
+						trail[i].renderer.material.mainTexture = text;
 
 						//make the trail rotate
 						//trail[i].AddComponent<Rotator>();
@@ -137,22 +138,5 @@ public class CharacterModel : MonoBehaviour {
 		}
 		
 	}
-
-	public Texture2D GetTexture(){
-		Debug.Log ("Getting textuer");
-		string path = "Assets/construction_paper.png";
-		if(text != null){
-			return text;
-		}
-		
-		if(System.IO.File.Exists(path)){
-			byte[] fileData = System.IO.File.ReadAllBytes (path);
-			text = new Texture2D (1, 1);
-			text.LoadImage (fileData);
-		}else{
-			Debug.Log ("Does not exist");
-		}
-		return text;
-		
-	}
+	
 }

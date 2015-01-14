@@ -21,9 +21,6 @@ public class LevelModel : MonoBehaviour {
 	List<GameObject> DraggableWall;
 	List<List<GameObject>> lists;
 
-//Texture
-	Texture2D text = null;
-
 	// Use this for initialization
 	void Start () {
 		levelcomponents = new string[] {"Wall", "Lava", "Heart"};
@@ -114,11 +111,14 @@ public class LevelModel : MonoBehaviour {
 					g.AddComponent<BoundBoxes_BoundBox>();
 					g.GetComponent<BoundBoxes_BoundBox>().lineColor = Color.white;
 					g.renderer.material.color = Color.gray;
-					g.renderer.material.mainTexture = GetTexture();
+					g.renderer.material.mainTexture = TextureModel.GetTexture("Assets/Textures/construction_paper.png");
 					
 				}else if(tag.Equals("Lava")){
-					g.renderer.material.mainTexture = GetTexture();
-					g.renderer.material.color = Color.red;
+					//g.renderer.material.mainTexture = GetTexture("lava.png");
+					g.AddComponent<TextureModel>();
+					g.GetComponent<TextureModel>().dir = "Assets/Textures/lavatemp/";
+					g.GetComponent<TextureModel>().imgprefix = "frame-0";
+					g.renderer.material.color = Color.white;
 					g.AddComponent<BoundBoxes_BoundBox>();
 					g.GetComponent<BoundBoxes_BoundBox>().lineColor = Color.white;
 				}else if(tag.Equals("Heart")){
@@ -152,26 +152,6 @@ public class LevelModel : MonoBehaviour {
 		keylight.intensity = .1f;
 
 	}
-	
-
-	public Texture2D GetTexture(){
-		Debug.Log ("Getting textuer");
-		string path = "Assets/construction_paper.png";
-		if(text != null){
-			return text;
-		}
-
-		if(System.IO.File.Exists(path)){
-			byte[] fileData = System.IO.File.ReadAllBytes (path);
-			text = new Texture2D (1, 1);
-			text.LoadImage (fileData);
-		}else{
-			Debug.Log ("Does not exist");
-		}
-		return text;
-
-	}
-
 
 	// Update is called once per frame
 	IEnumerator TimedUpdate () {
